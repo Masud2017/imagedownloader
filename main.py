@@ -14,7 +14,8 @@ if __name__ == "__main__":
     # data = env.get_key(key = "server.port")
 
     google = GoogleDownloader(Query="dog",numberImage=50)
-    google.saveCsv()
+    google.download_images()
+    logging.info(google.get_url())
 
 
     
