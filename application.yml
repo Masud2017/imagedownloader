@@ -1,0 +1,5 @@
+server.port : 4444
+data.port : 344
+
+url_google : https://www.google.com/search?q=
+url_google_last: tbm=isch
