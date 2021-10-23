@@ -26,7 +26,6 @@ class GoogleDownloader:
     def download_images(self):
         data = requests.get(self.url)
         bs = BeautifulSoup(data.content,'html.parser')
-        # file = open("log.html","w")
         
         os.system("mkdir {}".format(self.folder_path))
 
@@ -34,17 +33,14 @@ class GoogleDownloader:
             if 'http' or 'https' in img.get("src"):
                 lnk = img.get("src")
                 if self.validate_url(lnk) == True:
-                    # print(lnk)
                     type_of_image = requests.get(lnk).headers["content-type"].split("/")
 
                     with open(self.folder_path+"/"+str(random.random())+"."+type_of_image[1],"wb") as byte_writer:
-                        # logging.warning("Type of the image : {}".format(requests.get(lnk).headers["content-type"]).split("/"))
                         byte_writer.write(requests.get(lnk).content)
                         byte_writer.close()
                 else:
                     continue
             else:
                 continue
-        # file.close()
     def get_url(self):
         return self.url
