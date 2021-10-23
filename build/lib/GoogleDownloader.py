@@ -1,7 +1,8 @@
+from bs4.element import CharsetMetaAttributeValue
 import requests
 import threading
-from BeautifulSoup4 import BeautifulSoup
-# from .util.Environment import Environmet
+from bs4 import BeautifulSoup
+
 from .Environment import Environmet
 import logging
 import requests
@@ -13,4 +14,12 @@ class GoogleDownloader:
 
     def download_images(self):
         data = requests.get(self.url)
-        doc = BeautifulSoup(data, "html.parser")
+        bs = BeautifulSoup(data.content,'html.parser')
+        print(bs.body.find("img"))
+        # print(type(bs))
+        # with open("log.txt","wb") as file:
+        #     file.write(bs)
+
+        # file.close()
+    def get_url(self):
+        return self.url

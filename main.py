@@ -1,5 +1,5 @@
 from src.GoogleDownloader import GoogleDownloader
-from src.util.Environment import Environmet
+from src.Environment import Environmet
 
 import logging
 
@@ -13,7 +13,7 @@ if __name__ == "__main__":
     # # print("Pringting the data : ",env.get_key(key="server.port")
     # data = env.get_key(key = "server.port")
 
-    google = GoogleDownloader(Query="dog",numberImage=50)
+    google = GoogleDownloader(Query="cat",numberImage=50,folder_path="cat")
     google.download_images()
     logging.info(google.get_url())
 
