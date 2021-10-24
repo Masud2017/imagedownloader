@@ -2,25 +2,21 @@ from .Environment import Environmet
 
 from bs4.element import CharsetMetaAttributeValue
 import requests
+import threading
 from bs4 import BeautifulSoup
 import os
 import logging
 import requests
 import re
 import random
-from multiprocessing import Process, Lock, cpu_count # This is the mirror of threading module and give more sophisticated controll over mutex locks
-import numpy as np
-import pandas as pd
-import csv
+import sys
 
-'''Todo : We have to make a system that can '''
 class GoogleDownloader:
     def __init__(self, Query,numberImage,folder_path = "default"):
-        self.env = Environmet("applicaiton.yml")
+        self.env = Environmet("applicaiton.properties")
         self.url = self.env.get_key("url_google")+Query+"&"+self.env.get_key("url_google_last")
         self.numberImage = numberImage
         self.folder_path = folder_path
-        self.mutex_lock = Lock()
 
     def validate_url(self,url_to_validate):
         if re.search("^https",url_to_validate) or re.search("^http",url_to_validate):
@@ -30,12 +26,6 @@ class GoogleDownloader:
     def download_images(self):
         data = requests.get(self.url)
         bs = BeautifulSoup(data.content,'html.parser')
-
-        # make a record of data catagories that being downloaded
-        csv_data = open("data_info.csv","w")
-        cv = csv.writer(csv_data)
-        cv.writerow()
-        csv_data.close() # close the file pointer after being used
         
         os.system("mkdir {}".format(self.folder_path))
 
@@ -44,7 +34,7 @@ class GoogleDownloader:
                 lnk = img.get("src")
                 if self.validate_url(lnk) == True:
                     type_of_image = requests.get(lnk).headers["content-type"].split("/")
-                    # logging.info(requests.get(lnk).headers["content-disposition"]) # is there any way I can get the name of the image from google ? 
+
                     with open(self.folder_path+"/"+str(random.random())+"."+type_of_image[1],"wb") as byte_writer:
                         byte_writer.write(requests.get(lnk).content)
                         byte_writer.close()
@@ -52,24 +42,5 @@ class GoogleDownloader:
                     continue
             else:
                 continue
-
     def get_url(self):
         return self.url
-
-    def threaded_download(self):
-        # This is method is identical to the "download_image" method except using thread instead of single thread
-        # thead = Process(self.download_image,args=())
-        thread = []
-        count = cpu_count() # getting the core count of the system cpu.
-        for _ in count:
-            thread.append(Process(self.download_images,args=()))
-        for per_thread in thread:
-            per_thread.start()
-
-    '''
-    @return: pd.DataFrame (type)
-    @param: nothing
-    '''
-    def convert_to_dataset(self):
-        array = np.ndarray()
-        returnable = pd.DataFrame(array) # converting the array into dataframe
